@@ -1,0 +1,5 @@
+*.gem
+demo/tab0/Gemfile.lock
+demo/tab0/vendor/
+demo/tab0/tab0
+demo/tab0/.tool-versions

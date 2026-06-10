@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Fresh checkout → native binary. `engine: spinel` in the Gemfile makes
+# `bundle install` refuse to run under CRuby, so: `bundle lock` to resolve,
+# `spinel-compat vendor` to place deps (tep + tep-notebook by path).
+set -e
+cd "$(dirname "$0")/.."
+
+SPINEL_COMPAT="${SPINEL_COMPAT:-$HOME/sites/spinelgems/exe/spinel-compat}"
+command -v tep >/dev/null 2>&1 || gem install tep   # the tep build CLI
+[ -f Gemfile.lock ] || bundle lock                  # resolve (NOT bundle install)
+
+# Prefer the local compiler checkout; fall back to the cached engine.
+if [ -z "${SPINEL:-}" ]; then
+  if [ -x "$HOME/sites/spinel/spinel" ]; then
+    export SPINEL="$HOME/sites/spinel/spinel"
+  else
+    "$SPINEL_COMPAT" install-engine
+    export SPINEL="$HOME/.cache/spinel/current/spinel"
+  fi
+fi
+
+"$SPINEL_COMPAT" vendor                             # → vendor/spinel/ + deps.rb
+tep build app.rb -o tab0                            # compile → ./tab0
+echo "built ./tab0 — run it with: ./tab0 -p 4567"

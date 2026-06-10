@@ -1,0 +1,12 @@
+source "https://rubygems.org"
+
+# Spinel is the engine: compiled ahead-of-time to a native binary, not run
+# on CRuby. engine_version is advisory (must be a version literal).
+ruby "3.3.0", engine: "spinel", engine_version: "0.0.0"
+
+# The web framework — provides the HTTP server + routing DSL.
+gem "tep", ">= 0.11.1"
+
+# The battery under test, by path: this demo IS the walking skeleton that
+# proves an external pure-Ruby Tep battery vendors + compiles (DESIGN.md §7.4).
+gem "tep-notebook", path: "../.."
