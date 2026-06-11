@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.license  = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
 
-  spec.files = Dir["lib/**/*.rb"] + %w[README.md]
+  spec.files = Dir["lib/**/*.rb"] + Dir["sig/**/*.rbs"] + %w[README.md]
   spec.require_paths = ["lib"]
 
   # Pure Ruby — no spinel-ext.json, no native extensions, no runtime deps.
