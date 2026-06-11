@@ -1,0 +1,67 @@
+# Type roots for Spinel consumers (RFC spinelgems#13: a gem's sig/*.rbs
+# seeds whole-program inference for uncalled public methods, replacing
+# executable seed blocks). Hand-written against the walking-skeleton
+# model; keep in lockstep with lib/ (drift guard pattern: tep#206).
+module Tep
+  module Notebook
+    VERSION: String
+
+    class Output
+      @stream: Array[Hash[String, untyped]]
+      @count: Integer
+      @terminal: Hash[String, String]
+      @finished: bool
+      @status: Symbol
+
+      attr_reader terminal: Hash[String, String]
+      attr_reader status: Symbol
+
+      def initialize: () -> void
+      def running!: () -> self
+      def push: (Hash[String, untyped] event) -> self
+      def stream_length: () -> Integer
+      def each_event: () { (Hash[String, untyped]) -> void } -> self
+      def finish!: (String type, String value, ?Symbol status) -> self
+      def stale!: () -> self
+      def finished?: () -> bool
+      def make_terminal: (String type, String value) -> Hash[String, String]
+    end
+
+    class Cell
+      @id: String
+      @kind: Symbol
+      @source: String
+      @inputs: Hash[String, String]
+      @cost_class: Symbol
+      @output: Output
+
+      attr_reader id: String
+      attr_reader kind: Symbol
+      attr_reader source: String
+      attr_reader inputs: Hash[String, String]
+      attr_reader cost_class: Symbol
+      attr_reader output: Output
+
+      def initialize: (String id, Symbol kind, String source,
+                       ?Hash[String, String] inputs, ?Symbol cost_class) -> void
+      def expensive?: () -> bool
+      def depends_on?: (String cell_id) -> bool
+    end
+
+    class Document
+      @title: String
+      @cells: Array[Cell]
+
+      attr_reader title: String
+      attr_reader cells: Array[Cell]
+
+      def initialize: (String title) -> void
+      def add: (Cell cell) -> Cell
+      def fetch: (String id) -> Cell?
+      def dependents_of: (String id) -> Array[Cell]
+      def to_html: () -> String
+      def cell_html: (Cell c) -> String
+      def esc: (untyped s) -> String
+    end
+  end
+end

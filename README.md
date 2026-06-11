@@ -41,18 +41,22 @@ spinel-compat vendor      # → vendor/spinel/tep-notebook/lib/ + deps.rb
 
 Pure Ruby — no `spinel-ext.json`, nothing to compile at vendor time.
 
-### Type seeding (RFC spinelgems#13, open)
+### Type seeding (RFC spinelgems#13 — resolved: ship `sig/`)
 
-Uncalled public methods widen under Spinel's whole-program inference. If
-your app doesn't exercise the full API, also require the seed (executable
-call-site soup, same role as tep's own seed block):
+Uncalled public methods widen under Spinel's whole-program inference.
+RFC spinelgems#13 resolved that a gem ships standard **`sig/*.rbs`** as
+type roots (consumed via spinel's `--rbs`); this gem ships them
+(`sig/tep_notebook.rbs`, hand-written against the model, kept honest by
+the tep#206-style drift-guard pattern once a smoke harness exists).
+
+Until your toolchain passes `--rbs` through the vendor flow, the
+executable seed still works as the fallback:
 
 ```ruby
 require_relative "vendor/spinel/tep-notebook/lib/tep_notebook/seed"
 ```
 
-When RFC spinelgems#13 lands (gem `sig/*.rbs` as type roots), the seed
-file retires in favor of shipped RBS.
+The seed file retires once `--rbs sig` consumption is wired end-to-end.
 
 ## Demo: the walking skeleton
 
